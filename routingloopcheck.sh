@@ -6,7 +6,7 @@
  # by Evandro Alves (for Intercol)                          #
  # Versão 1.2811722                                         #
  # Documentacao completa em:                                #
- # wiki.intercol.com.br/Verificação_de_loop_de_roteamento   #
+ # https://github.com/evandroalves28/RoutingLoopCheck   #
  ############################################################
 
 if [ -z ${1} ] ; then
