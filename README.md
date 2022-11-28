@@ -4,6 +4,7 @@ em sub-redes e retorna uma lista de hosts que podem estar com loop,
 analisando do ponto de vista da rede de origem de execução do script.
 
 Esta versão possibilita 1 forma de execução: 
+
 ~$ routingloopcheck.sh <AS-NUMBER> 
 
 O Script irá consultar no whois do nic.br quais são os CIDR IPv4 alocados
