@@ -2,7 +2,7 @@
 ############################################################
 # Verificação de loop de roteamento                        #
 # by Evandro Alves                                         #
-# Versão 1.281172203                                       #
+# Versão 1.29112022                                        #
 # Documentacao completa em:                                #
 # https://github.com/evandroalves28/RoutingLoopCheck       #
 ############################################################
