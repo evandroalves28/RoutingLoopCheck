@@ -17,15 +17,19 @@ CLEAR_BEFORE_START=YES
 #Habilita o registro de logs
 SAVE_LOG=YES # habilita o registro de log 
 LOG_DATE="$(date '+%Y%m%d')"
-LOG_PATH=/var/log/routingloopcheck #local onde será salvo o arquivo de log
+LOG_PATH=/tmp #local onde será salvo o arquivo de log
 #
 #Realiza um teste de prova através de um traceroute
 PROOF_TEST=YES #habilita a realização de um teste de prova
 #Habilita o envio dos dados por email
 SEND_EMAIL=YES #habilita o envio de email
 ATTACH_LOG=YES #anexa o arquivo de log ao email
+BODY_TEMPLATE=YES #Insere um conteúdo padrão no corpo do email
+BODY_TEMPLATE_FILE=./routingloop_mail.txt #Localização do template de conteúdo para o corpo do email
 BODYLOG=NO #insere o conteúdo do arquivo de log, no corpo do email
-DST_MAIL=noc@intercol.com.br #destinatario do email
+NOC_MAIL=noc@intercol.com.br #destinatario do email
+NOTIFY_AS=YES
+
 #
 #Habilita o envio do log via telegram
 SEND_TELEGRAM=NO #habilita o envio do log via telegram
@@ -36,7 +40,7 @@ TELEGRAM_API="https://api.telegram.org/bot$TOKEN/sendDocument"
 #
 do_log() {
 	LOG_DATE="$(date '+%Y%m%d')"
-	LOG_FILE_NAME=routingloopcheck_AS${ASN}_${LOG_DATE}.log
+	LOG_FILE_NAME=routingloopcheck_${LOG_DATE}_AS${ASN}.log
 	LOG=${LOG_PATH}/${LOG_FILE_NAME}
 	if [ ! -e $LOG_PATH ]; then
 		mkdir $LOG_PATH
@@ -65,9 +69,6 @@ envia_telegram()
 	
 }
 
-envia_email() {
-	printf "%s\n" "${HOSTARRAY[@]}" |  mail -s "$MSG" $(if [ $SAVE_LOG = YES ]; then echo "-A $LOG"; fi) $DST_MAIL  >/dev/null 2>&1
-}
 if [ -z ${1} ] ; then
 		echo -e "\n"
         echo "Você precisa especificar o ASN a ser verificado"
@@ -130,11 +131,10 @@ executar() {
 
 						#Envia resultados por email
                         if  [ $SEND_EMAIL = YES ] ; then
-							printf "%s\n""$(cat /home/appliance/routingloop_mail.txt)\n$(if [ ${BODYLOG} = YES ]; then cat ${LOG}; fi)" |  mail -s "$MSG" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) $DST_MAIL  >/dev/null 2>&1
-							#printf "%s\n""$(cat /home/appliance/routingloop_mail.txt)\n$(cat $LOG)" |  mail -s "$MSG" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) $DST_MAIL  >/dev/null 2>&1
-                            #printf "%s\n" "${HOSTARRAY[@]}\n$(cat $LOG)" |  mail -s "$MSG" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) $DST_MAIL  >/dev/null 2>&1
-							#mail -s "$MSG" $(if [ $SAVE_LOG = YES ]; then echo "-A $LOG"; fi) $DST_MAIL </home/appliance/routingloop_mail.txt
-
+							declare -a MAIL_LIST=("$DST_MAIL" "$(if [ NOTIFY_AS = YES ]; then $(whois -h whois.nic.br "$ASN" 2>&1 | grep -w 'e-mail:' | cut -d ':' -f2); fi )")
+							for MAIL_CONTACT in ${MAIL_LIST[@]}; do
+								printf "%s\n""$(cat /home/appliance/routingloop_mail.txt)\n$(if [ ${BODYLOG} = YES ]; then cat ${LOG}; fi)" |  mail -s "$MSG" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) $MAIL_CONTACT  >/dev/null 2>&1
+							done
 						fi
 
 						#Envia pelo Telegram
