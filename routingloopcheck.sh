@@ -2,7 +2,7 @@
 ############################################################
 # Verificação de loop de roteamento                        #
 # by Evandro Alves                                         #
-# Versão 1.29112022                                        #
+# Versão 1.30112022                                        #
 # Documentacao completa em:                                #
 # https://github.com/evandroalves28/RoutingLoopCheck       #
 # Arquivo de execução do script                            #
@@ -105,7 +105,10 @@ executar() {
 
 						#Envia resultados por email
                         if  [ $SEND_EMAIL = YES ] ; then
-								printf "%s\n""$(if [ ${BODY_TEMPLATE} = YES ]; then cat ${BODY_TEMPLATE_FILE}; fi)\n$(if [ ${BODY_LOG} = YES ]; then cat ${LOG}; fi)" |  mail -s "$MSG" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) $MAIL_CONTACT  >/dev/null 2>&1
+							declare -a MAIL_LIST=("${NOC_MAIL}" "$(if [ ${NOTIFY_AS} = YES ]; then echo $(whois -h whois.nic.br "$ASN" 2>&1 | grep -w 'e-mail:' | cut -d ':' -f2); fi )")
+							for MAIL_CONTACT in ${MAIL_LIST[@]}; do
+								echo -e "${MSG} \n $(cat $(if [ ${BODY_TEMPLATE} = YES ]; then echo "${BODY_TEMPLATE_FILE}"; fi) $(if [ ${BODY_LOG} = YES ]; then echo "${LOG}"; fi))" |  mail -s "${MAIL_CONTACT}" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) ${NOC_MAIL}  >/dev/null 2>&1
+							done	
 						fi
 
 						#Envia pelo Telegram
