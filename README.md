@@ -19,7 +19,7 @@ OBS: Para enviar a notificação por email, você precisará do pacote **mailuti
     como resolver o problema de loop de roteamento.</p>
 <p>3 - Você pode executar o script manualmente ou criar um agendamento no cron para executar periodicamente.</br>
     Minha sugestão é a execução uma vez por semana.</br>
-    Para isso, adicione estas linhas no final do arquivoo /etc/crontab, onde **65535** é o seu ASN</p>
+    Para isso, adicione estas linhas no final do arquivo /etc/crontab, onde **65535** é o seu ASN</p>
     
     #RoutingLoopCheck
     0 2 * * 1 root /etc/routingloopcheck.sh 65535 >/dev/null 2>&1
