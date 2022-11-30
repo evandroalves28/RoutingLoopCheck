@@ -5,37 +5,11 @@
 # Versão 1.29112022                                        #
 # Documentacao completa em:                                #
 # https://github.com/evandroalves28/RoutingLoopCheck       #
+# Arquivo de execução do script                            #
 ############################################################
 #
 #
-#Altere estas variáveis conforme o ambiente 
-#
-#Limpa a tela antes de iniciar o script, para caso esteja
-#executando manualmente e estiver acompanhando a execução
-CLEAR_BEFORE_START=YES 
-#
-#Habilita o registro de logs
-SAVE_LOG=YES # habilita o registro de log 
-LOG_DATE="$(date '+%Y%m%d')"
-LOG_PATH=/tmp #local onde será salvo o arquivo de log
-#
-#Realiza um teste de prova através de um traceroute
-PROOF_TEST=YES #habilita a realização de um teste de prova
-#Habilita o envio dos dados por email
-SEND_EMAIL=YES #habilita o envio de email
-ATTACH_LOG=YES #anexa o arquivo de log ao email
-BODY_TEMPLATE=YES #Insere um conteúdo padrão no corpo do email
-BODY_TEMPLATE_FILE=./routingloop_mail.txt #Localização do template de conteúdo para o corpo do email
-BODYLOG=NO #insere o conteúdo do arquivo de log, no corpo do email
-NOC_MAIL=noc@intercol.com.br #destinatario do email
-NOTIFY_AS=YES
-
-#
-#Habilita o envio do log via telegram
-SEND_TELEGRAM=NO #habilita o envio do log via telegram
-TOKEN=620394643:AAEUqEA8lSPlfdcEor7RemuNBQX_q92piuA #token do bot telegram
-CHAT_EU=280805944 #CHATID para o qual será enviado a mensagem via telegram
-TELEGRAM_API="https://api.telegram.org/bot$TOKEN/sendDocument"
+source ./routingloopcheck.conf #Arquivo de configuração
 #
 #
 do_log() {
@@ -131,9 +105,9 @@ executar() {
 
 						#Envia resultados por email
                         if  [ $SEND_EMAIL = YES ] ; then
-							declare -a MAIL_LIST=("$DST_MAIL" "$(if [ NOTIFY_AS = YES ]; then $(whois -h whois.nic.br "$ASN" 2>&1 | grep -w 'e-mail:' | cut -d ':' -f2); fi )")
+							declare -a MAIL_LIST=("$NOC_MAIL" "$(if [ $NOTIFY_AS = YES ]; then $(whois -h whois.nic.br "$ASN" 2>&1 | grep -w 'e-mail:' | cut -d ':' -f2); fi )")
 							for MAIL_CONTACT in ${MAIL_LIST[@]}; do
-								printf "%s\n""$(cat /home/appliance/routingloop_mail.txt)\n$(if [ ${BODYLOG} = YES ]; then cat ${LOG}; fi)" |  mail -s "$MSG" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) $MAIL_CONTACT  >/dev/null 2>&1
+								printf "%s\n""$(if [ ${BODY_TEMPLATE} = YES ]; then cat ${BODY_TEMPLATE_FILE}; fi)\n$(if [ ${BODY_LOG} = YES ]; then cat ${LOG}; fi)" |  mail -s "$MSG" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) $MAIL_CONTACT  >/dev/null 2>&1
 							done
 						fi
 
