@@ -44,7 +44,7 @@ Utilizando o comando abaixo:
 
 ~$ routingloopcheck.sh -c 65535
 
-O script irá consultar a política de roeamento **AS-in** cadastrada no nic.br, verificar quem são os AS que estão no cone</br>
+O script irá consultar a política de roteamento **AS-in** cadastrada no nic.br, verificar quem são os AS que estão no cone</br>
 de downstream, coletar quais são os CIDR alocados aos mesmos e verificar se há loop de roteamento.</br>
 O script irá considerar como cone de downstream, as políticas de roteamento definidas como **accept AS65535**, como no exemplo</br>
 da imagem abaixo:
