@@ -43,13 +43,14 @@ O script irá consultar a política de roeamento **AS-in** cadastrada no nic.br,
 de downstream, coletar quais são os CIDR alocados aos mesmos e verificar se há loop de roteamento.</br>
 O script irá considerar como cone de downstream, as políticas de roteamento definidas como **accept AS65535**, como no exemplo</br>
 da imagem abaixo:
-![Alt text](./imagem_2022-11-30_084652337.png?raw=true )
+
+![Alt text](./screenshots/routingloop_whois.png?raw=true )
 
 <p>Exemplo de notificação por Email:</p>
 
-![Alt text](./routingloop_email.png?raw=true )
+![Alt text](./screenshots/routingloop_email.png?raw=true )
 
 <p>Exemplo de notificação por Telegram:</p>
 
-![Alt text](./imagem_2022-11-30_091705650.png?raw=true )
+![Alt text](./screenshots/routingloop_telegram.png?raw=true )
 
