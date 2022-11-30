@@ -1,0 +1,41 @@
+Durante nossas verificações de rotinas de SOC, foram identificados possíveis loops de roteamento em diversos hosts compreendidos no seu CIDR.
+Solicitamos por gentileza, que tratem essa questão o quanto antes, pois este tipo de  comportamento no roteamento dos seus ips pode ser explorado durante 
+algum eventual ataque DDoS, causando o esgotamento de recursos computacionais e capacidade de banda tanto em seus roteadores e swiches quanto nos nossos.
+
+Ex: Imagine um cenário onde seu CIDR é 172.16.0.0/22, porém na FIB do seu roteador há apenas rota igp para as sub-redes 172.16.1.0/24 e 172.16.2.0/24.
+Neste cenário, qualquer pacote destinado a hosts compreendidos na sub-rede 172.16.0.0/24, será enviado para a rota padrão do seu router (no caso, uma de suas 
+operadoras).
+Ao chegar em sua operadora, o pacote será enviado de volta para o seu roteador, visto que ele propaga a rota 172.16.0.0/22 via BGP.
+Ao chegar em seu roteador, o pacote será enviado novamente para a rota padrão por não possuir rota até o host de destino do pacote.
+Este processo se repete até que seja atingido o TTL do pacote, caracterizando um loop de roteamento.
+Este exemplo ilustra o que ocorre com 1 único pacote, porém, durante um ataque DDoS os roteadores precisam encaminhar  milhares ou às vezes milhões de pacotes
+por segundo, o que geralmente ocasiona o esgotamento de recursos computacionais do roteador, principalmente em sua capacidade de lidar com volume de pacotes.
+
+Este problema pode ser facilmente resolvido através da criação de rotas de blackhole para o seus CIDRs tanto em seus roteadores de borda ou nos BRAS/BNG,
+de modo que pacotes destinados a hosts ociosos do seu CIDR não sejam enviados de volta à sua rota padrão, caso não haja uma rota mais específica para o host ocioso.
+
+O recomendado é configurar em seu roteador de borda uma rota de blackhole para o seu CIDR menos específico, e em seus BRAS/BNG, rotas de blackhole específicas
+das sub-redes utilizadas naquele BRAS/BNG.
+
+Exemplo:
+	AS65535 possui a alocação do CIDR 172.16.0.0/22, e em sua topologia há um roteador de borda e 1 concentrador PPPoE e 1 concentrador corporativo,
+	onde a sub-rede 172.16.1.0/24 está alocada para o concentrador PPPoE e a sub-rede 172.16.2.0/24 está alocada para o concentrador corporativo.
+	Neste cenário, o ideal é configurar no roteador de borda, uma rota de blackhole para a rede 172.16.0.0/22, e como em seu roteamento interno (igp)
+	haverá uma rota as rotas 172.16.1.0/24 e 172.16.2.0/24 apontando para o concentrador PPPoE e concentrador corporativo, respectivamente, você deverá
+	configurar no concentrador PPPoe uma rota de blackhole para a rede 172.16.1.0/24, e uma rota de blackhole para a rede 172.16.2.0/24 no concentrador corporativo.
+		
+
+Ex CISCO
+cisco(config)# ip route 172.16.0.0 255.255.252.0 Null0
+
+Ex MIKROTIK
+[admin@MikroTik] ip route add dst-address=172.16.100.0/22 type=blackhole disabled=no comment="PREFIXOO GERAL DO ASN" 
+
+Ex HUAWEI:
+huawei# ip route-static 172.16.100.0/22 null 0 description "PREFIXO GERAL DO ASN"
+
+Ex: JUNIPER
+set routing-options static route 172.16.100.0/22 discard
+
+Ao final desta mensagem e/ou anexo ao email, está uma lista contendo hosts identificados com loop, bem como amostragens evidenciando o caso.
+
