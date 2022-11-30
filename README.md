@@ -6,7 +6,11 @@ analisando do ponto de vista da rede de origem de execução do script.</br>
 O script verifica através do comando fping, se os hosts de uma determinada rede</br>
 apresentam resposta do tipo **ICMP Time Exceeded** e gera uma lista contendo estes hosts.</br>
 A partir desta lista, o script pode gerar um log e notificações via email e/ou telegram.</br>
+OBS: Para enviar a notificação por email, você precisará do pacote **mailutils** instalado.
 </p>
+
+    ^$ apt install mailutils
+ 
 <h2>Como utilizar o script:</h2>
 <p>1 - Defina seus parâmetros no arquivo de configuração routingloopcheck.conf</p>
 
@@ -17,11 +21,12 @@ A partir desta lista, o script pode gerar um log e notificações via email e/ou
     Minha sugestão é a execução uma vez por semana.</br>
     Para isso, adicione estas linhas no final do arquivoo /etc/crontab, onde **65535** é o seu ASN</p>
     
-    #RoutingLoopCheck.sh
+    #RoutingLoopCheck
     0 2 * * 1 root /etc/routingloopcheck.sh 65535 >/dev/null 2>&1
     
 <p>ou</p>    
-    #RoutingLoopCheck.sh
+
+    #RoutingLoopCheck
     0 2 * * 1 root /etc/routingloopcheck.sh -c 65535 >/dev/null 2>&1
     
 </p>Em seguida, reinicie o cronjob:</p>
