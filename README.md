@@ -31,7 +31,7 @@ OBS: Para enviar a notificação por email, você precisará do pacote **mailuti
     
 </p>Em seguida, reinicie o cronjob:</p>
     
-    ~$ sustemctl restart cron
+    ~$ systemctl restart cron
    
  <p>Para verificar os CIDR de um ASN específico, execute o script, informando o ASN a ser verificado</p>
  
