@@ -105,10 +105,7 @@ executar() {
 
 						#Envia resultados por email
                         if  [ $SEND_EMAIL = YES ] ; then
-							declare -a MAIL_LIST=("$NOC_MAIL" "$(if [ $NOTIFY_AS = YES ]; then $(whois -h whois.nic.br "$ASN" 2>&1 | grep -w 'e-mail:' | cut -d ':' -f2); fi )")
-							for MAIL_CONTACT in ${MAIL_LIST[@]}; do
 								printf "%s\n""$(if [ ${BODY_TEMPLATE} = YES ]; then cat ${BODY_TEMPLATE_FILE}; fi)\n$(if [ ${BODY_LOG} = YES ]; then cat ${LOG}; fi)" |  mail -s "$MSG" $(if [ $ATTACH_LOG = YES ]; then echo "-A $LOG"; fi) $MAIL_CONTACT  >/dev/null 2>&1
-							done
 						fi
 
 						#Envia pelo Telegram
