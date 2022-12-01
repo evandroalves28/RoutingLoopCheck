@@ -55,7 +55,7 @@ fi
 
 executar() {
 	if [ ${1} = "-c" ] ; then
-		declare -a ASNARRAY=(`whois -h whois.nic.br "$2" 2>&1 | grep -w 'as-in:' |  grep -oE 'accept AS([0-9]{1,6})' | grep -oE '([0-9]{1,6})'`)
+		declare -a ASNARRAY=(`whois -h whois.nic.br "${@:2}" 2>&1 | grep -w 'as-in:' |  grep -oE 'accept AS([0-9]{1,6})' | grep -oE '([0-9]{1,6})'`)
 	else
 		declare -a ASNARRAY=("$@")
 	fi
