@@ -39,7 +39,7 @@ OBS: Para enviar a notificação por email, você precisará do pacote **mailuti
  
  <p>Utilizando este comando, o script irá realizar uma consulta no whois.nic.br, coletar quais os CIDR IPv4</br>
  alocados para este AS e verificar se há loops de roteamento nas sub-redes deste CIDR.</p>
- <p>Você pode realizar uma análise em lotes, informando vários ASNs.
+ <p>Você pode realizar uma análise em lotes, informando vários ASNs.</p>
 
     ~$ routingloopcheck.sh 65535 65534 65533
 
