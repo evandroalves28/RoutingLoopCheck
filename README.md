@@ -35,14 +35,17 @@ OBS: Para enviar a notificação por email, você precisará do pacote **mailuti
    
  <p>Para verificar os CIDR de um ASN específico, execute o script, informando o ASN a ser verificado</p>
  
- ~$ routingloopcheck.sh 65535
+    ~$ routingloopcheck.sh 65535
  
  <p>Utilizando este comando, o script irá realizar uma consulta no whois.nic.br, coletar quais os CIDR IPv4</br>
  alocados para este AS e verificar se há loops de roteamento nas sub-redes deste CIDR.</p>
+ <p>Você pode realizar uma análise em lotes, informando vários ASNs.
+
+    ~$ routingloopcheck.sh 65535 65534 65533
 
 Utilizando o comando abaixo:
 
-~$ routingloopcheck.sh -c 65535
+    ~$ routingloopcheck.sh -c 65535
 
 O script irá consultar a política de roteamento **AS-in** cadastrada no nic.br, verificar quem são os AS que estão no cone</br>
 de downstream, coletar quais são os CIDR alocados aos mesmos e verificar se há loop de roteamento.</br>
